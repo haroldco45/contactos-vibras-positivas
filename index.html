@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Contactos - Vibras Positivas</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #1c1e21; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        header { border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px; text-align: center; }
+        h1 { color: #2e7d32; margin-bottom: 10px; }
+        .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        .contact-counter { font-size: 0.9em; color: #65676b; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background-color: #f8f9fa; color: #4b4f56; text-align: left; padding: 15px; border-bottom: 2px solid #dee2e6; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+        tr:hover { background-color: #f1f8e9; }
+        .phone { color: #1a73e8; font-weight: 500; }
+        footer { margin-top: 40px; text-align: center; border-top: 1px solid #eee; padding-top: 20px; font-size: 0.85em; color: #888; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Mis Contactos</h1>
+        <p>Gestor de Agenda Personalizada</p>
+    </header>
+
+    <input type="text" id="searchInput" class="search-box" placeholder="Buscar por nombre o número..." onkeyup="filterContacts()">
+    
+    <div id="counter" class="contact-counter"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+            </tr>
+        </thead>
+        <tbody id="contactTable">
+            </tbody>
+    </table>
+
+    <footer>
+        <p>&copy; 2026 Derechos de autor: **Vibras Positivas**</p>
+    </footer>
+</div>
+
+<script>
+    // Datos extraídos del archivo VCF proporcionado
+    const contacts = [
+        { name: "Diana Mendiola", phone: "+13012831277" },
+        { name: "Martin Rodriguez", phone: "3104212411" },
+        { name: "Socio Yake Amway Elias", phone: "3226608386" },
+        { name: "Pedro Oviedo", phone: "3114110013" },
+        { name: "Diana Chykhabakh Escuela De Negocios De Alex Yovanosky", phone: "+380991623775" },
+        { name: "Diana cbna", phone: "3122366210" },
+        { name: "Soldado Pequeño", phone: "+573017900159" },
+        { name: "Diana Castro Bic Colombina", phone: "3152196747" },
+        { name: "Sonia Socia Amway", phone: "+573113452137" },
+        { name: "Diana Chema", phone: "+573003577504" },
+        { name: "Taraza Yoana Amway Fabian", phone: "3217820267" },
+        { name: "Restaurantes Santa Melona", phone: "+573148321007" },
+        { name: "Mauricio Porras - Distrileco", phone: "+573205176407" },
+        { name: "Wilson Preciad - La Gran Isla", phone: "3117195119" },
+        { name: "Yesid Herrera - Electrico", phone: "3146158949" },
+        { name: "Natalia Ramirez - Distrileco", phone: "3206271491" },
+        { name: "Jairo Trejos Cervantes (Ganadero)", phone: "+573105315345" },
+        { name: "Isaac Marin Gonzalez", phone: "+573148065982" },
+        { name: "Andres Fernandez (Supervisor)", phone: "38045" },
+        { name: "Deison Andres Valencia Grajales", phone: "+573005134533" }
+    ];
+
+    const tableBody = document.getElementById('contactTable');
+    const counterDiv = document.getElementById('counter');
+
+    function loadContacts(data) {
+        tableBody.innerHTML = '';
+        data.forEach(c => {
+            const row = `<tr>
+                <td>${c.name}</td>
+                <td class="phone">${c.phone}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+        counterDiv.innerText = `Mostrando ${data.length} contactos`;
+    }
+
+    function filterContacts() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = contacts.filter(c => 
+            c.name.toLowerCase().includes(query) || 
+            c.phone.includes(query)
+        );
+        loadContacts(filtered);
+    }
+
+    // Carga inicial
+    loadContacts(contacts);
+</script>
+
+</body>
+</html>
