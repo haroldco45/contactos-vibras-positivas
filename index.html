@@ -3,43 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Contactos - Vibras Positivas</title>
+    <title>Mis Contactos Pro - Vibras Positivas</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #1c1e21; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
-        header { border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px; text-align: center; }
-        h1 { color: #2e7d32; margin-bottom: 10px; }
-        .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        .contact-counter { font-size: 0.9em; color: #65676b; margin-bottom: 15px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background-color: #f8f9fa; color: #4b4f56; text-align: left; padding: 15px; border-bottom: 2px solid #dee2e6; }
-        td { padding: 15px; border-bottom: 1px solid #eee; }
-        tr:hover { background-color: #f1f8e9; }
-        .phone { color: #1a73e8; font-weight: 500; }
-        footer { margin-top: 40px; text-align: center; border-top: 1px solid #eee; padding-top: 20px; font-size: 0.85em; color: #888; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; margin: 0; padding: 15px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        header { text-align: center; border-bottom: 3px solid #2e7d32; margin-bottom: 20px; }
+        h1 { color: #2e7d32; margin-bottom: 5px; }
+        
+        .upload-section { background: #e8f5e9; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; border: 2px dashed #4CAF50; }
+        .search-box { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 10px; font-size: 16px; box-sizing: border-box; outline: none; }
+        .search-box:focus { border-color: #2e7d32; box-shadow: 0 0 5px rgba(46,125,50,0.3); }
+
+        .stats-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.9em; color: #555; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #2e7d32; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        
+        .contact-name { font-weight: bold; color: #333; }
+        .actions { display: flex; gap: 10px; }
+        
+        /* Botones de acción */
+        .btn-action { text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: inline-flex; align-items: center; justify-content: center; min-width: 80px; }
+        .btn-call { background-color: #1a73e8; color: white; }
+        .btn-wssp { background-color: #25d366; color: white; }
+        
+        .btn-upload { background: #2e7d32; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .btn-upload:hover { background: #1b5e20; }
+        .btn-clear { background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+
+        footer { margin-top: 30px; text-align: center; font-size: 0.8em; color: #888; border-top: 1px solid #eee; padding-top: 15px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>Mis Contactos</h1>
-        <p>Gestor de Agenda Personalizada</p>
+        <h1>Gestor de Contactos</h1>
     </header>
 
-    <input type="text" id="searchInput" class="search-box" placeholder="Buscar por nombre o número..." onkeyup="filterContacts()">
+    <div id="uploadArea" class="upload-section">
+        <p>Carga tu archivo <strong>Contactos_002.vcf</strong> para empezar:</p>
+        <input type="file" id="fileInput" accept=".vcf" style="display:none">
+        <button class="btn-upload" onclick="document.getElementById('fileInput').click()">Importar Contactos</button>
+    </div>
+
+    <input type="text" id="searchInput" class="search-box" placeholder="Buscar por nombre..." onkeyup="filterContacts()">
     
-    <div id="counter" class="contact-counter"></div>
+    <div class="stats-bar">
+        <span id="stats">Contactos: 0</span>
+        <button id="clearBtn" class="btn-clear" onclick="clearData()" style="display:none">Borrar Todo</button>
+    </div>
 
     <table>
         <thead>
             <tr>
                 <th>Nombre</th>
-                <th>Teléfono</th>
+                <th>Acciones</th>
             </tr>
         </thead>
-        <tbody id="contactTable">
-            </tbody>
+        <tbody id="contactTable"></tbody>
     </table>
 
     <footer>
@@ -48,56 +71,68 @@
 </div>
 
 <script>
-    // Datos extraídos del archivo VCF proporcionado
-    const contacts = [
-        { name: "Diana Mendiola", phone: "+13012831277" },
-        { name: "Martin Rodriguez", phone: "3104212411" },
-        { name: "Socio Yake Amway Elias", phone: "3226608386" },
-        { name: "Pedro Oviedo", phone: "3114110013" },
-        { name: "Diana Chykhabakh Escuela De Negocios De Alex Yovanosky", phone: "+380991623775" },
-        { name: "Diana cbna", phone: "3122366210" },
-        { name: "Soldado Pequeño", phone: "+573017900159" },
-        { name: "Diana Castro Bic Colombina", phone: "3152196747" },
-        { name: "Sonia Socia Amway", phone: "+573113452137" },
-        { name: "Diana Chema", phone: "+573003577504" },
-        { name: "Taraza Yoana Amway Fabian", phone: "3217820267" },
-        { name: "Restaurantes Santa Melona", phone: "+573148321007" },
-        { name: "Mauricio Porras - Distrileco", phone: "+573205176407" },
-        { name: "Wilson Preciad - La Gran Isla", phone: "3117195119" },
-        { name: "Yesid Herrera - Electrico", phone: "3146158949" },
-        { name: "Natalia Ramirez - Distrileco", phone: "3206271491" },
-        { name: "Jairo Trejos Cervantes (Ganadero)", phone: "+573105315345" },
-        { name: "Isaac Marin Gonzalez", phone: "+573148065982" },
-        { name: "Andres Fernandez (Supervisor)", phone: "38045" },
-        { name: "Deison Andres Valencia Grajales", phone: "+573005134533" }
-    ];
+    let allContacts = [];
 
-    const tableBody = document.getElementById('contactTable');
-    const counterDiv = document.getElementById('counter');
+    document.addEventListener('DOMContentLoaded', () => {
+        const saved = localStorage.getItem('vcf_data');
+        if (saved) {
+            allContacts = JSON.parse(saved);
+            render(allContacts);
+            document.getElementById('uploadArea').style.display = 'none';
+            document.getElementById('clearBtn').style.display = 'block';
+        }
+    });
 
-    function loadContacts(data) {
-        tableBody.innerHTML = '';
-        data.forEach(c => {
-            const row = `<tr>
-                <td>${c.name}</td>
-                <td class="phone">${c.phone}</td>
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const vcards = e.target.result.split('END:VCARD');
+            allContacts = vcards.map(vcard => {
+                const fn = vcard.match(/FN:(.*)/);
+                const tel = vcard.match(/TEL;[^:]*:(.*)/);
+                return fn ? { name: fn[1].trim(), phone: tel ? tel[1].replace(/\s+/g, '').trim() : null } : null;
+            }).filter(c => c && c.name);
+
+            allContacts.sort((a, b) => a.name.localeCompare(b.name));
+            localStorage.setItem('vcf_data', JSON.stringify(allContacts));
+            render(allContacts);
+            document.getElementById('uploadArea').style.display = 'none';
+            document.getElementById('clearBtn').style.display = 'block';
+        };
+        reader.readAsText(e.target.files[0]);
+    });
+
+    function render(data) {
+        const table = document.getElementById('contactTable');
+        document.getElementById('stats').innerText = `Total: ${data.length} contactos`;
+        
+        table.innerHTML = data.map(c => {
+            const cleanPhone = c.phone ? c.phone.replace(/[^0-9+]/g, '') : '';
+            return `
+            <tr>
+                <td class="contact-name">${c.name}</td>
+                <td class="actions">
+                    ${c.phone ? `
+                        <a href="tel:${cleanPhone}" class="btn-action btn-call">Llamar</a>
+                        <a href="https://wa.me/${cleanPhone.replace('+', '')}" target="_blank" class="btn-action btn-wssp">WhatsApp</a>
+                    ` : '<span style="color:#ccc">Sin número</span>'}
+                </td>
             </tr>`;
-            tableBody.innerHTML += row;
-        });
-        counterDiv.innerText = `Mostrando ${data.length} contactos`;
+        }).join('');
     }
 
     function filterContacts() {
         const query = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = contacts.filter(c => 
-            c.name.toLowerCase().includes(query) || 
-            c.phone.includes(query)
-        );
-        loadContacts(filtered);
+        const filtered = allContacts.filter(c => c.name.toLowerCase().includes(query));
+        render(filtered);
     }
 
-    // Carga inicial
-    loadContacts(contacts);
+    function clearData() {
+        if(confirm("¿Deseas borrar los contactos guardados?")) {
+            localStorage.removeItem('vcf_data');
+            location.reload();
+        }
+    }
 </script>
 
 </body>
