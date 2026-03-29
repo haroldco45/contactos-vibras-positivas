@@ -3,67 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Contactos Pro - Vibras Positivas</title>
+    <title>Contactos Master - Vibras Positivas</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; margin: 0; padding: 15px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        header { text-align: center; border-bottom: 3px solid #2e7d32; margin-bottom: 20px; }
-        h1 { color: #2e7d32; margin-bottom: 5px; }
+        :root { --primary: #2e7d32; --secondary: #1565c0; --danger: #c62828; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 10px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         
-        .upload-section { background: #e8f5e9; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; border: 2px dashed #4CAF50; }
-        .search-box { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 10px; font-size: 16px; box-sizing: border-box; outline: none; }
-        .search-box:focus { border-color: #2e7d32; box-shadow: 0 0 5px rgba(46,125,50,0.3); }
+        /* Estilos de Control */
+        header { text-align: center; padding-bottom: 20px; border-bottom: 2px solid var(--primary); }
+        .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+        .search-box { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+        
+        /* Etiquetas de Clasificación */
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75em; font-weight: bold; text-transform: uppercase; margin-left: 10px; }
+        .badge-mobile { background: #e3f2fd; color: #1565c0; }
+        .badge-wa { background: #e8f5e9; color: #2e7d32; }
 
-        .stats-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.9em; color: #555; }
+        /* Lista de Contactos */
+        .contact-card { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; transition: 0.2s; }
+        .contact-card:hover { background: #f1f8e9; }
+        .contact-info { display: flex; flex-direction: column; }
+        .contact-name { font-weight: 600; color: #333; }
+        .contact-phone { font-size: 0.9em; color: #666; }
         
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #2e7d32; color: white; padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .actions { display: flex; gap: 8px; }
+        .btn { border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 0.85em; font-weight: 600; text-align: center; }
+        .btn-call { background: var(--secondary); color: white; }
+        .btn-wssp { background: #25d366; color: white; }
+        .btn-main { background: var(--primary); color: white; width: 100%; padding: 15px; font-size: 1.1em; }
         
-        .contact-name { font-weight: bold; color: #333; }
-        .actions { display: flex; gap: 10px; }
-        
-        /* Botones de acción */
-        .btn-action { text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: inline-flex; align-items: center; justify-content: center; min-width: 80px; }
-        .btn-call { background-color: #1a73e8; color: white; }
-        .btn-wssp { background-color: #25d366; color: white; }
-        
-        .btn-upload { background: #2e7d32; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; transition: 0.3s; }
-        .btn-upload:hover { background: #1b5e20; }
-        .btn-clear { background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; text-align: center; }
+        .stat-item { background: #fff; border: 1px solid #eee; padding: 10px; border-radius: 8px; }
+        .stat-num { display: block; font-size: 1.5em; font-weight: bold; color: var(--primary); }
 
-        footer { margin-top: 30px; text-align: center; font-size: 0.8em; color: #888; border-top: 1px solid #eee; padding-top: 15px; }
+        footer { margin-top: 30px; text-align: center; font-size: 0.8em; color: #999; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>Gestor de Contactos</h1>
+        <h1>Limpieza y Organización de Contactos</h1>
+        <p>Depuración inteligente para tu agenda</p>
     </header>
 
-    <div id="uploadArea" class="upload-section">
-        <p>Carga tu archivo <strong>Contactos_002.vcf</strong> para empezar:</p>
-        <input type="file" id="fileInput" accept=".vcf" style="display:none">
-        <button class="btn-upload" onclick="document.getElementById('fileInput').click()">Importar Contactos</button>
+    <div id="setupArea">
+        <div style="padding: 40px; text-align: center;">
+            <input type="file" id="vcfInput" accept=".vcf" style="display:none">
+            <button class="btn btn-main" onclick="document.getElementById('vcfInput').click()">Subir Contactos_002.vcf para Limpieza</button>
+            <p style="color: #666; font-size: 0.9em; margin-top: 10px;">Se eliminarán duplicados y se normalizarán los números automáticamente.</p>
+        </div>
     </div>
 
-    <input type="text" id="searchInput" class="search-box" placeholder="Buscar por nombre..." onkeyup="filterContacts()">
-    
-    <div class="stats-bar">
-        <span id="stats">Contactos: 0</span>
-        <button id="clearBtn" class="btn-clear" onclick="clearData()" style="display:none">Borrar Todo</button>
-    </div>
+    <div id="mainApp" style="display:none">
+        <div class="stats-grid">
+            <div class="stat-item"><span id="statTotal" class="stat-num">0</span>Total Únicos</div>
+            <div class="stat-item"><span id="statDupes" class="stat-num" style="color:var(--danger)">0</span>Eliminados</div>
+            <div class="stat-item"><span id="statWA" class="stat-num" style="color:#25d366">0</span>WhatsApp</div>
+        </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="contactTable"></tbody>
-    </table>
+        <div class="toolbar">
+            <input type="text" id="search" class="search-box" placeholder="Buscar por nombre o empresa..." onkeyup="filter()">
+            <button class="btn" style="background:#666; color:white" onclick="resetApp()">Cargar otro archivo</button>
+        </div>
+
+        <div id="contactList"></div>
+    </div>
 
     <footer>
         <p>&copy; 2026 Derechos de autor: **Vibras Positivas**</p>
@@ -71,69 +76,109 @@
 </div>
 
 <script>
-    let allContacts = [];
+    let contacts = [];
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const saved = localStorage.getItem('vcf_data');
-        if (saved) {
-            allContacts = JSON.parse(saved);
-            render(allContacts);
-            document.getElementById('uploadArea').style.display = 'none';
-            document.getElementById('clearBtn').style.display = 'block';
-        }
-    });
+    document.getElementById('vcfInput').addEventListener('change', handleFile);
 
-    document.getElementById('fileInput').addEventListener('change', function(e) {
+    function handleFile(e) {
+        const file = e.target.files[0];
+        if (!file) return;
         const reader = new FileReader();
-        reader.onload = function(e) {
-            const vcards = e.target.result.split('END:VCARD');
-            allContacts = vcards.map(vcard => {
-                const fn = vcard.match(/FN:(.*)/);
-                const tel = vcard.match(/TEL;[^:]*:(.*)/);
-                return fn ? { name: fn[1].trim(), phone: tel ? tel[1].replace(/\s+/g, '').trim() : null } : null;
-            }).filter(c => c && c.name);
+        reader.onload = (event) => processVCF(event.target.result);
+        reader.readAsText(file);
+    }
 
-            allContacts.sort((a, b) => a.name.localeCompare(b.name));
-            localStorage.setItem('vcf_data', JSON.stringify(allContacts));
-            render(allContacts);
-            document.getElementById('uploadArea').style.display = 'none';
-            document.getElementById('clearBtn').style.display = 'block';
-        };
-        reader.readAsText(e.target.files[0]);
-    });
+    function processVCF(text) {
+        const rawBlocks = text.split('END:VCARD');
+        const uniquePhones = new Set();
+        const cleanedData = [];
+        let dupeCount = 0;
 
-    function render(data) {
-        const table = document.getElementById('contactTable');
-        document.getElementById('stats').innerText = `Total: ${data.length} contactos`;
+        rawBlocks.forEach(block => {
+            const fnMatch = block.match(/FN:(.*)/);
+            const telMatch = block.match(/TEL;[^:]*:(.*)/);
+            
+            if (fnMatch && telMatch) {
+                let name = fnMatch[1].trim();
+                let rawPhone = telMatch[1].replace(/[^0-9+]/g, ''); // Solo números y +
+                
+                // Normalización básica (Ej: quitar prefijo local si es necesario o estandarizar)
+                if (uniquePhones.has(rawPhone)) {
+                    dupeCount++;
+                    return; // Saltar duplicado
+                }
+
+                uniquePhones.add(rawPhone);
+                cleanedData.push({
+                    name: name,
+                    phone: rawPhone,
+                    type: rawPhone.startsWith('+') ? 'Intl' : (rawPhone.startsWith('3') ? 'Móvil' : 'Fijo')
+                });
+            }
+        });
+
+        // Ordenar alfabéticamente
+        contacts = cleanedData.sort((a, b) => a.name.localeCompare(b.name));
         
-        table.innerHTML = data.map(c => {
-            const cleanPhone = c.phone ? c.phone.replace(/[^0-9+]/g, '') : '';
-            return `
-            <tr>
-                <td class="contact-name">${c.name}</td>
-                <td class="actions">
-                    ${c.phone ? `
-                        <a href="tel:${cleanPhone}" class="btn-action btn-call">Llamar</a>
-                        <a href="https://wa.me/${cleanPhone.replace('+', '')}" target="_blank" class="btn-action btn-wssp">WhatsApp</a>
-                    ` : '<span style="color:#ccc">Sin número</span>'}
-                </td>
-            </tr>`;
-        }).join('');
+        // Guardar
+        localStorage.setItem('vp_contacts_clean', JSON.stringify(contacts));
+        localStorage.setItem('vp_stats_dupes', dupeCount);
+        
+        display();
     }
 
-    function filterContacts() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = allContacts.filter(c => c.name.toLowerCase().includes(query));
-        render(filtered);
+    function display() {
+        const list = document.getElementById('contactList');
+        const setup = document.getElementById('setupArea');
+        const main = document.getElementById('mainApp');
+        
+        setup.style.display = 'none';
+        main.style.display = 'block';
+
+        document.getElementById('statTotal').innerText = contacts.length;
+        document.getElementById('statDupes').innerText = localStorage.getItem('vp_stats_dupes') || 0;
+        document.getElementById('statWA').innerText = contacts.filter(c => c.type !== 'Fijo').length;
+
+        renderItems(contacts);
     }
 
-    function clearData() {
-        if(confirm("¿Deseas borrar los contactos guardados?")) {
-            localStorage.removeItem('vcf_data');
+    function renderItems(data) {
+        const list = document.getElementById('contactList');
+        list.innerHTML = data.map(c => `
+            <div class="contact-card">
+                <div class="contact-info">
+                    <span class="contact-name">${c.name}</span>
+                    <span class="contact-phone">${c.phone} <span class="badge ${c.type === 'Fijo' ? 'badge-mobile' : 'badge-wa'}">${c.type}</span></span>
+                </div>
+                <div class="actions">
+                    <a href="tel:${c.phone}" class="btn btn-call">Llamar</a>
+                    <a href="https://wa.me/${c.phone.replace('+', '')}" target="_blank" class="btn btn-wssp">WhatsApp</a>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function filter() {
+        const q = document.getElementById('search').value.toLowerCase();
+        const filtered = contacts.filter(c => c.name.toLowerCase().includes(q));
+        renderItems(filtered);
+    }
+
+    function resetApp() {
+        if(confirm("¿Quieres cargar un nuevo archivo y borrar la limpieza actual?")) {
+            localStorage.clear();
             location.reload();
         }
     }
-</script>
 
+    // Auto-cargar si existe
+    window.onload = () => {
+        const saved = localStorage.getItem('vp_contacts_clean');
+        if(saved) {
+            contacts = JSON.parse(saved);
+            display();
+        }
+    }
+</script>
 </body>
 </html>
